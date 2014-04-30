@@ -28,7 +28,7 @@ int main(int argc, char **argv)
   double dt = 1/(atof(argv[1]));  // En ns 
   double B = 0.5;
   float E = 940000;
-  double w = 1.758820150*B*pow(10,2); // rad por ns
+  double w = 9.57883*pow(10,7)*B*pow(10,-9); // rad por ns
   double periodo = (2*M_PI)/w; // en ns
 
  //Definir radio maximo del ciclotron, separacion entre las Ds
@@ -41,6 +41,7 @@ int main(int argc, char **argv)
   int m = 500;
   int k = 0;
   int NUM_PASOS = atoi(argv[2]);
+  int NUM_VUELTAS = 0;
   double t = 0;  // En ns  
   double kx11,kx21,kx12,kx22,kx13,kx23,kx14,kx24,promkx1,promkx2;
   double ky11,ky21,ky12,ky22,ky13,ky23,ky14,ky24,promky1,promky2;
@@ -56,7 +57,7 @@ int main(int argc, char **argv)
   vy = malloc(sizeof(double)*m);
   
   //Dar las condiciones inciales al sistema
-  x[0] = -0.5*5.68563*pow(10,-12)*3*pow(10,7)/B;
+  x[0] = -0.5*1.04397*pow(10,-8)*3*pow(10,7)/B;
   y[0] = d/2;
   vx[0] = 0;
   vy[0] = 0.03; //En ns 
@@ -65,6 +66,7 @@ int main(int argc, char **argv)
   printf("El campo magnetico del ciclotron es de %f T \n", B);
   printf("El campo elecetrico es de %fN/C \n", E);
   printf("El periodo de media vuelta en el ciclotron es de %fns \n", periodo);
+  printf("La frecuencia de ciclotron es de %frad/ns \n", w);
 
   while(pow(x[n]*x[n]+y[n]*y[n],0.5)<=pow(pow(r_MAX,2)+pow(d/2,2),0.5) && x[n]<=r_MAX && salir == 0)
     {
@@ -141,6 +143,8 @@ int main(int argc, char **argv)
       // Evolucion del sistema si se encuentra en la region 2: CAMPO ELECTRICO. ¿No se puede evolucionar este segmento analiticamente?
        else if(y[n]<=d/2 || y[n]>=-d/2)
 	{
+		printf("%f",n*dt);
+		salir = 1;
 	  //PRIMER PASO
 	  ky11 = y1E(vy[n]);//Para y	
 	  ky21 = y2E(E,w,t+0.5*dt); 
@@ -197,13 +201,14 @@ int main(int argc, char **argv)
 	out3 = fopen(str3,"a");
 
 //Exportar los datos para graficar.
+/*
   for(k=0;k<n-1;k++)
     {		
 	fprintf(out1,"%f %f %f\n",x[(k)],y[(k)],k*dt);
-	fprintf(out2,"%f %f \n",pow(vx[(k)]*vx[(k)]+vy[(k)]*vy[(k)],0.5)*pow(10,-9),k*dt);
-	fprintf(out3,"%f %f \n",pow(pow(vx[(k)]*vx[(k)]+vy[(k)]*vy[(k)],0.5)*pow(10,-9),2)*0.5*9.10938*pow(10,-31),k*dt);
+	fprintf(out2,"%f %f \n",pow(vx[(k)]*vx[(k)]+vy[(k)]*vy[(k)],0.5)*pow(10,9),k*dt);
+	fprintf(out3,"%f %f \n",pow(pow(vx[(k)]*vx[(k)]+vy[(k)]*vy[(k)],0.5)*pow(10,9),2)*0.5*1.6276*pow(10,-27)/(1.60217657*pow(10,-19)),k*dt);
     }
-
+*/
   return 0;
 }
 
@@ -214,7 +219,7 @@ float y1E(float V_ant)
 
 float y2E(float E, float w, float t)
 {
-  return 1.75882*pow(10,-7)*E*cos(w*t);
+  return 9.57883*pow(10,7)*pow(10,-18)*E*cos(w*t);
 }
 
 float x1B(float V_ant)
@@ -224,7 +229,7 @@ float x1B(float V_ant)
 
 float x2B(float x, float y, float vx, float vy, float B)
 {
-  return -1.75882*pow(10,2)*pow(vx*vx+vy*vy,.5)*B*x/pow(x*x+y*y,0.5);
+  return -9.57883*pow(10,7)*pow(10,-9)*pow(vx*vx+vy*vy,.5)*B*x/pow(x*x+y*y,0.5);
 }
 
 float y1B(float V_ant)
@@ -234,7 +239,7 @@ float y1B(float V_ant)
 
 float y2B(float x, float y,float vx, float vy, float B)
 {
-  return -1.75882*pow(10,2)*pow(vx*vx+vy*vy,.5)*B*y/pow(x*x+y*y,0.5);
+  return -9.57883*pow(10,7)*pow(10,-9)*pow(vx*vx+vy*vy,.5)*B*y/pow(x*x+y*y,0.5);
 }
 
 
