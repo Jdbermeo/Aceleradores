@@ -25,34 +25,35 @@ int main(int argc, char **argv)
   FILE *out1,*out2,*out3;
   
   //El campo electrico es de 10000 N/C
-  float dt = 1/(atof(argv[1]));  // En ns
-  float B = 0.5;
-  float E = 9400;
-  float w = 1.758820150*B*pow(10,2); // rad por ns
-  float periodo = (2*M_PI)/w; // en ns
+  double dt = 1/(atof(argv[1]));  // En ns 
+  double B = 0.5;
+  float E = 940000;
+  double w = 1.758820150*B*pow(10,2); // rad por ns
+  double periodo = (2*M_PI)/w; // en ns
 
  //Definir radio maximo del ciclotron, separacion entre las Ds
-  const r_MAX = 9.5;
-  const d = 0.1;
+  float r_MAX = 9.5;
+  float d = 0.1;
   int salir = 0;
 
   //Declarar variables
   int n = 0;
   int m = 500;
   int k = 0;
-  float t = 0;  // En ns  
-  float kx11,kx21,kx12,kx22,kx13,kx23,kx14,kx24,promkx1,promkx2;
-  float ky11,ky21,ky12,ky22,ky13,ky23,ky14,ky24,promky1,promky2;
-  float y1,vy1,y2,vy2,y3,vy3,x1,vx1,x2,vx2,x3,vx3;
+  int NUM_PASOS = atoi(argv[2]);
+  double t = 0;  // En ns  
+  double kx11,kx21,kx12,kx22,kx13,kx23,kx14,kx24,promkx1,promkx2;
+  double ky11,ky21,ky12,ky22,ky13,ky23,ky14,ky24,promky1,promky2;
+  double y1,vy1,y2,vy2,y3,vy3,x1,vx1,x2,vx2,x3,vx3;
 
   //Definir los vectores que van a guardar la evolucion del sistema
-  float  *x,*y,*vx,*vy; 
+  double  *x,*y,*vx,*vy; 
  
   //Inicializar los primeros 500 puntos de los punteros
-  x = malloc(sizeof(float)*m);
-  y = malloc(sizeof(float)*m);
-  vx = malloc(sizeof(float)*m);
-  vy = malloc(sizeof(float)*m);
+  x = malloc(sizeof(double)*m);
+  y = malloc(sizeof(double)*m);
+  vx = malloc(sizeof(double)*m);
+  vy = malloc(sizeof(double)*m);
   
   //Dar las condiciones inciales al sistema
   x[0] = -0.5*5.68563*pow(10,-12)*3*pow(10,7)/B;
@@ -67,7 +68,7 @@ int main(int argc, char **argv)
 
   while(pow(x[n]*x[n]+y[n]*y[n],0.5)<=pow(pow(r_MAX,2)+pow(d/2,2),0.5) && x[n]<=r_MAX && salir == 0)
     {
-      	if(n==1400)
+      	if(n==NUM_PASOS)
 	{
 	  printf("%i \n",n);
 	  salir = 1;
@@ -76,14 +77,14 @@ int main(int argc, char **argv)
       if(n==(m-1))
 	{
 	  m= m+500;
-	  x = realloc(x,sizeof(float)*m);
-	  y = realloc(y,sizeof(float)*m);
-	  vx = realloc(vx,sizeof(float)*m);
-	  vy = realloc(vy,sizeof(float)*m);
+	  x = realloc(x,sizeof(double)*m);
+	  y = realloc(y,sizeof(double)*m);
+	  vx = realloc(vx,sizeof(double)*m);
+	  vy = realloc(vy,sizeof(double)*m);
 	 }   
       
       // Evolucion del sistema si se encuentra en la region 1: CAMPO MAGNETICO 
-      if(y[n]>d/2 && y[n]<-d/2)
+      if(y[n]>=d/2 || y[n]<=-d/2)
 	{
 	  //PRIMER PASO
 	  kx11 = x1B(vx[n]);//Para x
@@ -138,11 +139,8 @@ int main(int argc, char **argv)
 	}
 
       // Evolucion del sistema si se encuentra en la region 2: CAMPO ELECTRICO. ¿No se puede evolucionar este segmento analiticamente?
-      if(y[n]<d/2 || y[n]>-d/2)
+       else if(y[n]<=d/2 || y[n]>=-d/2)
 	{
-	  printf("este es %i \n",n);
-	  printf("este es %f \n",x[n]);
-
 	  //PRIMER PASO
 	  ky11 = y1E(vy[n]);//Para y	
 	  ky21 = y2E(E,w,t+0.5*dt); 
@@ -226,7 +224,7 @@ float x1B(float V_ant)
 
 float x2B(float x, float y, float vx, float vy, float B)
 {
-  return -1.75882*pow(10,-7)*pow(vx*vx+vy*vy,.5)*B*x/pow(x*x+y*y,0.5);
+  return -1.75882*pow(10,2)*pow(vx*vx+vy*vy,.5)*B*x/pow(x*x+y*y,0.5);
 }
 
 float y1B(float V_ant)
@@ -236,7 +234,7 @@ float y1B(float V_ant)
 
 float y2B(float x, float y,float vx, float vy, float B)
 {
-  return -1.75882*pow(10,-7)*pow(vx*vx+vy*vy,.5)*B*y/pow(x*x+y*y,0.5);
+  return -1.75882*pow(10,2)*pow(vx*vx+vy*vy,.5)*B*y/pow(x*x+y*y,0.5);
 }
 
 
