@@ -27,7 +27,7 @@ int main(int argc, char **argv)
   //El campo electrico es de 10000 N/C
   double dt = 1/(atof(argv[1]));  // En ns 
   double B = 0.5;
-  float E = 9400;
+  float E = 940000;
   double w = 1.758820150*B*pow(10,2); // rad por ns
   double periodo = (2*M_PI)/w; // en ns
 
@@ -224,7 +224,7 @@ float x1B(float V_ant)
 
 float x2B(float x, float y, float vx, float vy, float B)
 {
-  return -1.75882*pow(10,-7)*pow(vx*vx+vy*vy,.5)*B*x/pow(x*x+y*y,0.5);
+  return -1.75882*pow(10,2)*pow(vx*vx+vy*vy,.5)*B*x/pow(x*x+y*y,0.5);
 }
 
 float y1B(float V_ant)
@@ -234,7 +234,7 @@ float y1B(float V_ant)
 
 float y2B(float x, float y,float vx, float vy, float B)
 {
-  return -1.75882*pow(10,-7)*pow(vx*vx+vy*vy,.5)*B*y/pow(x*x+y*y,0.5);
+  return -1.75882*pow(10,2)*pow(vx*vx+vy*vy,.5)*B*y/pow(x*x+y*y,0.5);
 }
 
 

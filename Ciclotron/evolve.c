@@ -56,7 +56,7 @@ int main(int argc, char **argv)
   vy = malloc(sizeof(double)*m);
   
   //Dar las condiciones inciales al sistema
-  x[0] = -0.5*5.68563*pow(10,-12)*3*pow(10,7)/B;
+  x[0] = -0.5*pow(1.04397,-8)*3*pow(10,7)/B;
   y[0] = d/2;
   vx[0] = 0;
   vy[0] = 0.03; //En ns 
@@ -214,7 +214,7 @@ float y1E(float V_ant)
 
 float y2E(float E, float w, float t)
 {
-  return 1.75882*pow(10,-7)*E*cos(w*t);
+  return 9.57883*pow(10,7)*pow(10,-18)*E*cos(w*t);
 }
 
 float x1B(float V_ant)
@@ -224,7 +224,7 @@ float x1B(float V_ant)
 
 float x2B(float x, float y, float vx, float vy, float B)
 {
-  return -1.75882*pow(10,2)*pow(vx*vx+vy*vy,.5)*B*x/pow(x*x+y*y,0.5);
+  return -9.57883*pow(10,7)*pow(10,-9)*pow(vx*vx+vy*vy,.5)*B*x/pow(x*x+y*y,0.5);
 }
 
 float y1B(float V_ant)
@@ -234,7 +234,7 @@ float y1B(float V_ant)
 
 float y2B(float x, float y,float vx, float vy, float B)
 {
-  return -1.75882*pow(10,2)*pow(vx*vx+vy*vy,.5)*B*y/pow(x*x+y*y,0.5);
+  return -9.57883*pow(10,7)*pow(10,-9)*pow(vx*vx+vy*vy,.5)*B*y/pow(x*x+y*y,0.5);
 }
 
 
