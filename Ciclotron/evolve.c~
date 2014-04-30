@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 
   while(pow(x[n]*x[n]+y[n]*y[n],0.5)<=pow(pow(r_MAX,2)+pow(d/2,2),0.5) && x[n]<=r_MAX && salir == 0)
     {
-      	if(n==1400)
+      	if(n==300)
 	{
 	  printf("%i \n",n);
 	  salir = 1;
