@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   FILE *out1,*out2,*out3;
   
   //El campo electrico es de 10000 N/C
-  double dt = 1/(atof(argv[1]));  // En ns 
+  double dt = M_PI*2/(atof(argv[1]));  // En ns 
   double B = 0.5;
   float E = 9400;
   double w = B; // q/c = 1
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 
  //Definir radio maximo del ciclotron, separacion entre las Ds
   float r_MAX = 10000;
-  float d = 0.1;
+  float d = 5.0;
   int salir = 0;
 
   //Declarar variables
@@ -61,6 +61,7 @@ int main(int argc, char **argv)
   x[0] = -(0.5*vy[0])/B;
   y[0] = d/2;
   vx[0] = 0;
+
   //Da las condiciones de simulacion del ciclotron
 
   printf("El campo magnetico del ciclotron es de %f T \n", B);
@@ -107,6 +108,15 @@ int main(int argc, char **argv)
 	  ky12 = y1B(vy1);	
 	  kx22 = x2B(x1,y1,vx1,vy1,B);
 	  ky22 = y2B(x1,y1,vx1,vy1,B); 
+	  
+	  //Cambio en posicion	
+	  x2 = x[n]+(dt/2)*kx12;	
+	  y2 = y[n]+(dt/2)*ky12;
+	 
+	  //Cambio en velocidad
+	  vx2 = vx[n]+(dt/2)*kx22;
+	  vy2 = vy[n]+(dt/2)*ky22;
+	  
 	
 	  //TERCER PASO
 	  kx13 = x1B(vx2);
@@ -144,7 +154,7 @@ int main(int argc, char **argv)
        else if(y[n]<=d/2 || y[n]>=-d/2)
 	{
 		printf("%f\n",n*dt);
-	
+		salir = 1;
 	  //PRIMER PASO
 	  ky11 = y1E(vy[n]);//Para y	
 	  ky21 = y2E(E,w,t+0.5*dt); 
@@ -185,22 +195,25 @@ int main(int argc, char **argv)
     }
 	
 	char str1[50] = "posicion.dat";
-	char str2[50] = "velocidad.dat";
+	char str2[50] = "radio.dat";
 	char str3[50] = "Energia.dat";
 
 	out1 = fopen(str1,"w");
-
-	fprintf(out1,"%f %f %f\n",x[(0)],y[(0)],0*dt);
+	out2 = fopen(str2,"w");
+	
+	fprintf(out1,"%f %f %f\n",x[(0)],y[(0)],0.0);
+	fprintf(out2,"%f %f\n",pow(x[(0)]*x[(0)]+y[(0)]*y[(0)],0.5),0.0);
 	
 	out1 = fopen(str1,"a");
-	
+	out2 = fopen(str2,"a");	
 //Exportar los datos para graficar.
 
   for(k=0;k<n-1;k++)
     {	
-	if(n%3!=0)
+	if(k%10==0)
 	{
 		fprintf(out1,"%f %f %f\n",x[(k)],y[(k)],k*dt);
+		fprintf(out2,"%f %f\n",k*dt,pow(x[(0)]*x[(0)]+y[(0)]*y[(0)],0.5));
     	}
     }
 
