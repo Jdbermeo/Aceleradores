@@ -32,7 +32,7 @@ int main(int argc, char **argv)
   double periodo = (M_PI)/w; // Periodo de media vuelta en ns
 
  //Definir radio maximo del ciclotron, separacion entre las Ds
-  float r_MAX = 10000;
+  float r_MAX = 18;
   float d = 0.1;
   int salir = 0;
 
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
   //Dar las condiciones inciales al sistema
   vy[0] = 1; 
   x[0] = -(vy[0])/B;
-  y[0] = d/2;
+  y[0] = 0;
   vx[0] = 0;
 
   //Da las condiciones de simulacion del ciclotron
@@ -221,7 +221,7 @@ int main(int argc, char **argv)
 	if(k%1000==0)
 	{
 		fprintf(out1,"%f %f %f\n",x[(k)],y[(k)],k*dt);
-		fprintf(out2,"%f %f\n",k*dt,pow(x[(0)]*x[(0)]+y[(0)]*y[(0)],0.5));
+		fprintf(out2,"%f %f\n",k*dt,pow(x[(k)]*x[(k)]+y[(k)]*y[(k)],0.5));
     	}
     }
 
@@ -235,7 +235,7 @@ float y1E(float V_ant)
 
 float y2E(float E, float w, float t)
 {
-  return E;
+  return E*cos(w*t);
 }
 
 float x1B(float V_ant)
@@ -245,7 +245,7 @@ float x1B(float V_ant)
 
 float x2B(float x, float y, float vx, float vy, float B)
 {
-  return -pow(vx*vx+vy*vy,.5)*B*x/pow(x*x+y*y,0.5);
+  return vy*B;
 }
 
 float y1B(float V_ant)
@@ -255,7 +255,7 @@ float y1B(float V_ant)
 
 float y2B(float x, float y,float vx, float vy, float B)
 {
-  return -pow(vx*vx+vy*vy,.5)*B*y/pow(x*x+y*y,0.5);
+  return -vx*B;
 }
 
 

@@ -26,7 +26,7 @@ for i in range(len(files)):
 
 for i in range(len(files)):
 	archivo1=np.loadtxt(open(files[-i-1],"r"))  
-	plt.scatter(archivo1[:,0],archivo1[:,1])
+	plt.plot(archivo1[:,0],archivo1[:,1])
     	plt.show()
     	plt.close()
            
