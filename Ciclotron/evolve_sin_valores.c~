@@ -27,13 +27,13 @@ int main(int argc, char **argv)
   //El campo electrico es de 10000 N/C
   double dt = M_PI*2/(atof(argv[1]));  // En ns 
   double B = 0.5;
-  float E = 9400;
+  float E = 100;
   double w = B; // q/c = 1
   double periodo = (M_PI)/w; // Periodo de media vuelta en ns
 
  //Definir radio maximo del ciclotron, separacion entre las Ds
   float r_MAX = 10000;
-  float d = 5;
+  float d = 0.1;
   int salir = 0;
 
   //Declarar variables
@@ -57,8 +57,8 @@ int main(int argc, char **argv)
   vy = malloc(sizeof(double)*m);
   
   //Dar las condiciones inciales al sistema
-  vy[0] = 10; 
-  x[0] = -(0.5*vy[0])/B;
+  vy[0] = 1; 
+  x[0] = -(vy[0])/B;
   y[0] = d/2;
   vx[0] = 0;
 
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
        else if(y[n]<=d/2 || y[n]>=-d/2)
 	{
 		printf("%f\n",n*dt);
-		salir = 1;
+		
 	  //PRIMER PASO
 	  ky11 = y1E(vy[n]);//Para y	
 	  ky21 = y2E(E,w,t+0.5*dt); 
@@ -202,7 +202,7 @@ int main(int argc, char **argv)
 	out2 = fopen(str2,"w");
 	
 	fprintf(out1,"%f %f %f\n",x[(0)],y[(0)],0.0);
-	fprintf(out2,"%f %f\n",pow(x[(0)]*x[(0)]+y[(0)]*y[(0)],0.5),0.0);
+	fprintf(out2,"%f %f\n",0.0,pow(x[(0)]*x[(0)]+y[(0)]*y[(0)],0.5));
 	
 	out1 = fopen(str1,"a");
 	out2 = fopen(str2,"a");	
@@ -210,7 +210,7 @@ int main(int argc, char **argv)
 
   for(k=0;k<n-1;k++)
     {	
-	if(k%10==0)
+	if(k%100==0)
 	{
 		fprintf(out1,"%f %f %f\n",x[(k)],y[(k)],k*dt);
 		fprintf(out2,"%f %f\n",k*dt,pow(x[(0)]*x[(0)]+y[(0)]*y[(0)],0.5));
@@ -227,7 +227,7 @@ float y1E(float V_ant)
 
 float y2E(float E, float w, float t)
 {
-  return E*cos(w*t);
+  return E*cos(w*t+M_PI/4);
 }
 
 float x1B(float V_ant)

@@ -27,7 +27,7 @@ int main(int argc, char **argv)
   //El campo electrico es de 10000 N/C
   double dt = M_PI*2/(atof(argv[1]));  // En ns 
   double B = 0.5;
-  float E = 100;
+  float E = 10;
   double w = B; // q/c = 1
   double periodo = (M_PI)/w; // Periodo de media vuelta en ns
 
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
   //Dar las condiciones inciales al sistema
   vy[0] = 1; 
   x[0] = -(vy[0])/B;
-  y[0] = d/2;
+  y[0] = 0;
   vx[0] = 0;
 
   //Da las condiciones de simulacion del ciclotron
@@ -154,7 +154,15 @@ int main(int argc, char **argv)
        else if(y[n]<=d/2 || y[n]>=-d/2)
 	{
 		printf("%f\n",n*dt);
-		
+	if(x[n]<0)
+	{
+		E=pow(E*E,0.5);
+	}
+	
+	else if	(x[n]>0)
+	{	
+		E=-pow(E*E,0.5);
+	}
 	  //PRIMER PASO
 	  ky11 = y1E(vy[n]);//Para y	
 	  ky21 = y2E(E,w,t+0.5*dt); 
@@ -165,14 +173,14 @@ int main(int argc, char **argv)
 	  //SEGUNDO PASO
 	  ky12 = y1E(vy1);	
 	  ky22 = y2E(E,w,t+0.5*dt); 
+
+	  //Cambio en velocidad
+	  vy2 = vy[n]+(dt/2)*ky22;
 	
 	  //TERCER PASO
 	  ky13 = y1E(vy2);	
 	  ky23 = y2E(E,w,t+dt); 
  
-	  //Cambio en posicion	
-	  y3 = y[n]+(dt)*ky13;
-	 
 	  //Cambio en velocidad
 	  vy3 = vy[n]+(dt)*ky23;
 	   
@@ -227,7 +235,7 @@ float y1E(float V_ant)
 
 float y2E(float E, float w, float t)
 {
-  return E*cos(w*t+M_PI/4);
+  return E;
 }
 
 float x1B(float V_ant)
