@@ -152,9 +152,7 @@ int main(int argc, char **argv)
 
       // Evolucion del sistema si se encuentra en la region 2: CAMPO ELECTRICO. ¿No se puede evolucionar este segmento analiticamente?
        else if(y[n]<=d/2 || y[n]>=-d/2)
-	{
-		printf("%f\n",n*dt);
-		
+	{	
 	  //PRIMER PASO
 	  ky11 = y1E(vy[n]);//Para y	
 	  ky21 = y2E(E,w,t+0.5*dt); 

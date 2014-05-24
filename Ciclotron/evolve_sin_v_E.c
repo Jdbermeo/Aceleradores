@@ -22,17 +22,18 @@ int main(int argc, char **argv)
   //Campo magnético es de 0.5 T
 
   //Declarar el puente para escribir los resultados
-  FILE *out1,*out2,*out3;
+  FILE *out1,*out2,*out3,*out4;
   
   //El campo electrico es de 10000 N/C
   double dt = M_PI*2/(atof(argv[1]));  // En ns 
   double B = 0.5;
-  float E = 10;
-  double w = B; // q/c = 1
+  float E = 940000;
+  float v = 0;
+  double w = 9.57883*pow(10,7)*pow(10,-9)*B; // q/c = 1
   double periodo = (M_PI)/w; // Periodo de media vuelta en ns
 
  //Definir radio maximo del ciclotron, separacion entre las Ds
-  float r_MAX = 18;
+  float r_MAX = 9.5;
   float d = 0.1;
   int salir = 0;
 
@@ -57,8 +58,8 @@ int main(int argc, char **argv)
   vy = malloc(sizeof(double)*m);
   
   //Dar las condiciones inciales al sistema
-  vy[0] = 1; 
-  x[0] = -(vy[0])/B;
+  vy[0] = 0.03; 
+  x[0] = -1.04397*pow(10,-8)*3*pow(10,7)*(vy[0])/B;
   y[0] = 0;
   vx[0] = 0;
 
@@ -153,16 +154,12 @@ int main(int argc, char **argv)
       // Evolucion del sistema si se encuentra en la region 2: CAMPO ELECTRICO. ¿No se puede evolucionar este segmento analiticamente?
        else if(y[n]<=d/2 || y[n]>=-d/2)
 	{
-		printf("%f\n",n*dt);
-	if(x[n]<0)
-	{
-		E=pow(E*E,0.5);
-	}
+		if(x[n]<0)
+		E = pow(E*E,0.5);
 	
-	else if	(x[n]>0)
-	{	
-		E=-pow(E*E,0.5);
-	}
+		if(x[n]>0)
+		E = -pow(E*E,0.5);
+
 	  //PRIMER PASO
 	  ky11 = y1E(vy[n]);//Para y	
 	  ky21 = y2E(E,w,t+0.5*dt); 
@@ -204,16 +201,24 @@ int main(int argc, char **argv)
 	
 	char str1[50] = "posicion.dat";
 	char str2[50] = "radio.dat";
-	char str3[50] = "Energia.dat";
+	char str3[50] = "velocidad.dat";
+	char str4[50] = "Energia.dat";
 
 	out1 = fopen(str1,"w");
 	out2 = fopen(str2,"w");
-	
+	out3 = fopen(str3,"w");	
+	out4 = fopen(str4,"w");	
+	v = pow(vx[(0)]*vx[(0)]+vy[(0)]*vy[(0)],0.5)*pow(10,9);
 	fprintf(out1,"%f %f %f\n",x[(0)],y[(0)],0.0);
 	fprintf(out2,"%f %f\n",0.0,pow(x[(0)]*x[(0)]+y[(0)]*y[(0)],0.5));
+	fprintf(out3,"%f %f\n",0.0,v);
+	fprintf(out4,"%f %f \n",0.0,pow(v,2)*0.5*1.04397*pow(10,-14));
 	
 	out1 = fopen(str1,"a");
 	out2 = fopen(str2,"a");	
+	out3 = fopen(str3,"a");
+	out4 = fopen(str4,"a");
+
 //Exportar los datos para graficar.
 
   for(k=0;k<n-1;k++)
@@ -222,6 +227,9 @@ int main(int argc, char **argv)
 	{
 		fprintf(out1,"%f %f %f\n",x[(k)],y[(k)],k*dt);
 		fprintf(out2,"%f %f\n",k*dt,pow(x[(k)]*x[(k)]+y[(k)]*y[(k)],0.5));
+		v = pow(vx[(k)]*vx[(k)]+vy[(k)]*vy[(k)],0.5)*pow(10,9);
+		fprintf(out3,"%f %f\n",k*dt,pow(vx[(k)]*vx[(k)]+vy[(k)]*vy[(k)],0.5)*pow(10,9),k*dt);
+		fprintf(out4,"%f %f \n",k*dt,pow(v,2)*0.5*1.04397*pow(10,-14));
     	}
     }
 
@@ -234,8 +242,8 @@ float y1E(float V_ant)
 }
 
 float y2E(float E, float w, float t)
-{
-  return E;
+{ 
+  return 9.57883*pow(10,7)*pow(10,-18)*E;
 }
 
 float x1B(float V_ant)
@@ -245,7 +253,7 @@ float x1B(float V_ant)
 
 float x2B(float x, float y, float vx, float vy, float B)
 {
-  return vy*B;
+  return 9.57883*pow(10,7)*pow(10,-9)*vy*B;
 }
 
 float y1B(float V_ant)
@@ -255,7 +263,7 @@ float y1B(float V_ant)
 
 float y2B(float x, float y,float vx, float vy, float B)
 {
-  return -vx*B;
+  return -9.57883*pow(10,7)*pow(10,-9)*vx*B;
 }
 
 

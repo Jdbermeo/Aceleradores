@@ -210,7 +210,7 @@ int main(int argc, char **argv)
 
   for(k=0;k<n-1;k++)
     {	
-	if(k%100==0)
+	if(k%1000==0)
 	{
 		fprintf(out1,"%f %f %f\n",x[(k)],y[(k)],k*dt);
 		fprintf(out2,"%f %f\n",k*dt,pow(x[(0)]*x[(0)]+y[(0)]*y[(0)],0.5));

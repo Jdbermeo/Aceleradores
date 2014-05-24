@@ -58,7 +58,7 @@ int main(int argc, char **argv)
   
   //Dar las condiciones inciales al sistema
   x[0] = -0.5*1.04397*pow(10,-8)*3*pow(10,7)/B;
-  y[0] = d/2;
+  y[0] = 0/2;
   vx[0] = 0;
   vy[0] = 0.03; //En ns 
   //Da las condiciones de simulacion del ciclotron
